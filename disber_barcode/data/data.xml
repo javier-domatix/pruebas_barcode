@@ -1,0 +1,49 @@
+<odoo>
+    <record id="stock_barcode_picking_client_action" model="ir.actions.client">
+        <field name="name">Barcode Picking Client Action</field>
+        <field name="tag">stock_barcode_client_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="stock_barcode_inventory_client_action" model="ir.actions.client">
+        <field name="name">Barcode Inventory Client Action</field>
+        <field name="tag">stock_barcode_client_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="stock_barcode_action_stock_menu" model="ir.actions.client">
+        <field name="name">Stock Action</field>
+        <field name="tag">stock_barcode_menu_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="stock_barcode_action_package_movement_menu" model="ir.actions.client">
+        <field name="name">Package Movement Action</field>
+        <field name="tag">package_movement_menu_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="stock_barcode_action_package_without_pickings" model="ir.actions.client">
+        <field name="name">Package Movement Without Pickings</field>
+        <field name="tag">package_without_pickings_menu_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="stock_barcode_action_move_to_warehouse" model="ir.actions.client">
+        <field name="name">Package Move To Warehouse</field>
+        <field name="tag">move_to_warehouse_menu_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="stock_barcode_action_pickings_menu" model="ir.actions.client">
+        <field name="name">Transferencias</field>
+        <field name="tag">pickings_menu_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="stock_barcode_action_detailed_picking" model="ir.actions.client">
+        <field name="name">Transferencias Detalladas</field>
+        <field name="tag">detailed_picking_menu_action</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

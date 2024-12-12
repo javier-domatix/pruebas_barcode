@@ -1,0 +1,30 @@
+<odoo>
+    <record id="view_stock_move_line_wizard_form" model="ir.ui.view">
+        <field name="name">stock.move.line.wizard.form</field>
+        <field name="model">stock.move.line.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Stock Move Line">
+                <group>
+                    <field name="move_id" invisible="1"/>
+                    <field name="package_id"/>
+                    <field name="result_package_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="quantity"/>
+                    <field name="lot_id"/>
+                </group>
+                <footer>
+                    <button string="Update" type="object" name="update_move_line" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_move_line_wizard" model="ir.actions.act_window">
+        <field name="name">Update Stock Move Line</field>
+        <field name="res_model">stock.move.line.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

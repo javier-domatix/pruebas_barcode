@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Main menu -->
+
+    <record id="stock_barcode_action_main_menu" model="ir.actions.client">
+        <field name="name">Lector de barras</field>
+        <field name="path">barcode</field>
+        <field name="tag">stock_barcode_main_menu</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem
+        id="stock_barcode_menu"
+        action="stock_barcode_action_main_menu"
+        sequence="155"/>
+
+</odoo>
