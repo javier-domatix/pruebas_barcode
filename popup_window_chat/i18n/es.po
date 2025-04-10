@@ -1,0 +1,36 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* popup_window_chat
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-07 10:38+0000\n"
+"PO-Revision-Date: 2025-04-07 10:38+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: popup_window_chat
+#: model:ir.model.fields,field_description:popup_window_chat.field_res_users__disable_popups_notifications
+msgid "Disable Popup Notifications"
+msgstr "Desactivar notificaciones emergentes"
+
+#. module: popup_window_chat
+#: model:ir.model.fields,help:popup_window_chat.field_res_users__disable_popups_notifications
+msgid "If checked, message popups will not be displayed for this user."
+msgstr "Si se marca esta opción, no se mostrarán mensajes emergentes para este usuario."
+
+#. module: popup_window_chat
+#: model_terms:ir.ui.view,arch_db:popup_window_chat.res_users_view_form
+msgid "Notifications"
+msgstr "Notificaciones"
+
+#. module: popup_window_chat
+#: model:ir.model,name:popup_window_chat.model_res_users
+msgid "User"
+msgstr "Usuario"
