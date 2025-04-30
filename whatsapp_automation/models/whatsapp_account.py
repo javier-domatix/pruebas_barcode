@@ -48,8 +48,9 @@ class WhatsAppAccount(models.Model):
                     channel = self.env['discuss.channel'].sudo().search([('message_ids', 'in', parent_id.id)], limit=1)
                     if parent_id.model == 'crm.lead':
                         lead_id = self.env['crm.lead'].sudo().browse(parent_id.res_id)
+                        body = self.get_message_body(messages)
                         lead_id.message_post(
-                            body=messages['text']['body'],
+                            body=body,
                             author_id=lead_id.partner_id.id,
                             date=datetime.fromtimestamp(int(messages["timestamp"])),
                             subtype_xmlid="mail.mt_comment",
@@ -63,8 +64,9 @@ class WhatsAppAccount(models.Model):
                     order='create_date desc',
                     limit=1
                 )
+                body = self.get_message_body(messages)
                 lead_id.message_post(
-                            body=messages['text']['body'],
+                            body=body,
                             author_id=lead_id.partner_id.id,
                             date=datetime.fromtimestamp(int(messages["timestamp"])),
                             subtype_xmlid="mail.mt_comment",
@@ -126,3 +128,53 @@ class WhatsAppAccount(models.Model):
                 _logger.warning("Unsupported whatsapp message type: %s", messages)
                 continue
             channel.message_post(whatsapp_inbound_msg_uid=messages['id'], **kwargs)
+
+
+    def get_body(self, messages):
+        message_type = messages['type']
+        wa_api = WhatsAppApi(self)
+        if message_type == 'text':
+                return plaintext2html(messages['text']['body'])
+        elif message_type == 'button':
+            return messages['button']['text']
+        elif message_type in ('document', 'image', 'audio', 'video', 'sticker'):
+            filename = messages[message_type].get('filename')
+            is_voice = messages[message_type].get('voice')
+            mime_type = messages[message_type].get('mime_type')
+            caption = messages[message_type].get('caption')
+            datas = wa_api._get_whatsapp_document(messages[message_type]['id'])
+            if not filename:
+                extension = mimetypes.guess_extension(mime_type) or ''
+                filename = message_type + extension
+            # kwargs['attachments'] = [(filename, datas, {'voice': is_voice})]
+            if caption:
+                return plaintext2html(caption)
+        elif message_type == 'location':
+            url = Markup("https://maps.google.com/maps?q={latitude},{longitude}").format(
+                latitude=messages['location']['latitude'], longitude=messages['location']['longitude'])
+            body = Markup('<a target="_blank" href="{url}"> <i class="fa fa-map-marker"/> {location_string} </a>').format(
+                url=url, location_string=_("Location"))
+            if messages['location'].get('name'):
+                body += Markup("<br/>{location_name}").format(location_name=messages['location']['name'])
+            if messages['location'].get('address'):
+                body += Markup("<br/>{location_address}").format(location_address=messages['location']['address'])
+            return body
+        elif message_type == 'contacts':
+            body = ""
+            for contact in messages['contacts']:
+                body += Markup("<i class='fa fa-address-book'/> {contact_name} <br/>").format(
+                    contact_name=contact.get('name', {}).get('formatted_name', ''))
+                for phone in contact.get('phones'):
+                    body += Markup("{phone_type}: {phone_number}<br/>").format(
+                        phone_type=phone.get('type'), phone_number=phone.get('phone'))
+            return body
+        # elif message_type == 'reaction':
+        #     msg_uid = messages['reaction'].get('message_id')
+        #     whatsapp_message = self.env['whatsapp.message'].sudo().search([('msg_uid', '=', msg_uid)])
+        #     if whatsapp_message:
+        #         partner_id = channel.whatsapp_partner_id
+        #         emoji = messages['reaction'].get('emoji')
+        #         whatsapp_message.mail_message_id._post_whatsapp_reaction(reaction_content=emoji, partner_id=partner_id)
+        else:
+            _logger.warning("Unsupported whatsapp message type: %s", messages)
+
