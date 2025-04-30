@@ -46,9 +46,9 @@ class WhatsAppAccount(models.Model):
                     parent_id = parent_whatsapp_message.mail_message_id
                 if parent_id:
                     channel = self.env['discuss.channel'].sudo().search([('message_ids', 'in', parent_id.id)], limit=1)
-                    if parent_id.model == 'crm.lead':
+                    if parent_id.model == 'crm.lead' and message_type != 'reaction':
                         lead_id = self.env['crm.lead'].sudo().browse(parent_id.res_id)
-                        body=False
+                        body=""
                         attachments = False
                         if message_type in ('document', 'image', 'audio', 'video', 'sticker'):
                             filename = messages[message_type].get('filename')
@@ -74,7 +74,7 @@ class WhatsAppAccount(models.Model):
                             message_type="whatsapp_message",
                         )
 
-            else:
+            elif message_type != 'reaction':
                 phone = phone_validation.phone_format(messages['from'], 'ES', '34', force_format='INTERNATIONAL')
                 lead_id = self.env['crm.lead'].sudo().search(
                     [('phone', '=', phone)],
@@ -166,7 +166,6 @@ class WhatsAppAccount(models.Model):
 
     def get_message_body(self, messages):
         message_type = messages['type']
-        wa_api = WhatsAppApi(self)
         if message_type == 'text':
                 return plaintext2html(messages['text']['body'])
         elif message_type == 'button':
@@ -190,5 +189,3 @@ class WhatsAppAccount(models.Model):
                     body += Markup("{phone_type}: {phone_number}<br/>").format(
                         phone_type=phone.get('type'), phone_number=phone.get('phone'))
             return body
-        elif message_type == 'reaction':
-            body = False
