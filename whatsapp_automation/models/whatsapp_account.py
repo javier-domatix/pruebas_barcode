@@ -48,7 +48,7 @@ class WhatsAppAccount(models.Model):
                     channel = self.env['discuss.channel'].sudo().search([('message_ids', 'in', parent_id.id)], limit=1)
                     if parent_id.model == 'crm.lead':
                         lead_id = self.env['crm.lead'].sudo().browse(parent_id.res_id)
-                        body=""
+                        body=False
                         attachments = False
                         if message_type in ('document', 'image', 'audio', 'video', 'sticker'):
                             filename = messages[message_type].get('filename')
@@ -66,7 +66,7 @@ class WhatsAppAccount(models.Model):
                             body = self.get_message_body(messages)
 
                         lead_id.message_post(
-                            body=body,
+                            body=body if body else None,
                             attachments=attachments if attachments else None,
                             author_id=lead_id.partner_id.id,
                             date=datetime.fromtimestamp(int(messages["timestamp"])),
@@ -190,10 +190,5 @@ class WhatsAppAccount(models.Model):
                     body += Markup("{phone_type}: {phone_number}<br/>").format(
                         phone_type=phone.get('type'), phone_number=phone.get('phone'))
             return body
-        # elif message_type == 'reaction':
-        #     msg_uid = messages['reaction'].get('message_id')
-        #     whatsapp_message = self.env['whatsapp.message'].sudo().search([('msg_uid', '=', msg_uid)])
-        #     if whatsapp_message:
-        #         partner_id = channel.whatsapp_partner_id
-        #         emoji = messages['reaction'].get('emoji')
-        #         whatsapp_message.mail_message_id._post_whatsapp_reaction(reaction_content=emoji, partner_id=partner_id)
+        elif message_type == 'reaction':
+            body = False
